@@ -32,8 +32,8 @@ SoilParams<-function(catch, DEM, c=1000, resume=FALSE){
   print(paste("Number of tiles to calculate:", v, "x", h, "=", h*v))
   
   #Define factors to adapt different raster resolutions
-  f_d<-floor(0.008333333/res(DEM)[1])
-  f_a<-floor(0.002083333/res(DEM)[1])
+  # f_d<-floor(0.008333333/res(DEM)[1])
+  # f_a<-floor(0.002083333/res(DEM)[1])
 
     
   
@@ -59,23 +59,56 @@ if (!resume) #Start new run, do not resume
   unlink("MapSoils/*.*") #delete maps of prior runs
   start=data.frame(a=1, b=0) #Start from the first tile####
  } 
+
+#required grids  
+required_grids = c(
+  depth ="Pelletier_DTB/depth_$no$.tif", #"hillslope-soildepth 5,6  
+  soils ="SoilGrids/wrb.tif",
+  clay  ="SoilGrids/clay_sd$no$.tif", #"SoilGrids/clay_$no$.tif",
+  silt  ="SoilGrids/silt_sd$no$.tif",
+  sand  ="SoilGrids/sand_sd$no$.tif",
+  coarse="SoilGrids/cfvo_sd$no$.tif",
+  bulkD ="SoilGrids/bdod_sd$no$.tif",
+  om    ="SoilGrids/soc_sd$no$.tif",
+  ph    ="SoilGrids/phh2o_sd$no$.tif",
+  cec   ="SoilGrids/cec_sd$no$.tif"
+)
+
+replace_no = function(x, no) #replace placeholder $no$ in string with given number to form the actual filename
+  return(sub(x=x, pattern="\\$no\\$", repl=no))
+
+check_if_exists = function(filename)
+{
+  if (!file.exists(filename))
+    stop(paste0(filename, " not found. Check path and/or rerun GetDTB() and/or GetSG()"))
+}
+
+#check availability of required grids  
+  for (layer in 5:6)
+    check_if_exists(replace_no(required_grids["depth"], layer))
   
+  check_if_exists(replace_no(required_grids["soils"], ""))
   
+  for (grid in c("clay", "silt", "sand", "coarse", "bulkD", "om", "ph", "cec"))
+    for (layer in 1:6)
+      check_if_exists(replace_no(required_grids[grid], layer))
+
+
+
+#iterate through all tiles  
  for (a in start$a:v){
    for (b in 1:h){
      
      if (a == start$a & b <= start$b) next  #fast-forward to specified beginning
       
       
-      print(paste("Treating tile", a,b, Sys.time(), "Memory in use:", memory.size(max=F)))
+      print(paste("Treating tile", a,b, paste0("(",round((a-start$a+1)*b+b/((v-start$a+1)*h)*100),"%)"), Sys.time(), "Memory in use:", round(as.numeric(pryr::mem_used())/2^20), " MB"))
       
       #Crop DEM to extent of current tile
-      dem<-crop(DEM, extent(DEM,((a-1)*vcells -4), a*vcells,((b-1)*hcells -4), b*hcells))    
+      dem<-crop(DEM, extent(DEM, r1=max(1, ((a-1)*vcells -4)), r2=a*vcells, c1=max(1, ((b-1)*hcells -4)), c2=b*hcells))   
+     
       dem<-mask(x=dem, mask=catch) #set cells outside the catchment to NA
-      
 
-      
-      
       #Jump tiles outside the catchment/study area
       if(sum(is.na(getValues(dem)))==length(getValues(dem))) 
       {
@@ -83,10 +116,10 @@ if (!resume) #Start new run, do not resume
         next
       }  
       
-      d5<-raster("Pelletier_DTB/depth_5.tif") #"hillslope-soildepth"
+      d5<-raster(replace_no(required_grids["depth"], 5)) #"hillslope-soildepth"
       d5<-crop(d5,dem, snap="out")
       d5[d5<=0]<-NA #apparently, nodata and 0 are not clearly distinguished, so we assume NA for cells with 0 
-      d6<-raster("Pelletier_DTB/depth_6.tif") #"valley-bottom soildepth"
+      d6<-raster(replace_no(required_grids["depth"], 6)) #"valley-bottom soildepth"
       d6<-crop(d6,dem, snap="out")
       d6[d6<=0]<-NA
       slope<-terrain(dem, opt="slope", unit="degrees", neighbors=8)
@@ -148,7 +181,7 @@ if (!resume) #Start new run, do not resume
 #      depth<-aggregate(depth, fact=f_a)
 
       #load soil grids soil taxonomy
-      soils<-raster("SoilGrids/wrb.tif")
+      soils<-raster(required_grids["soils"])
       soils[]=as.integer(soils[]) #convert to integer
       dataType(soils)="INT2S"
       
@@ -188,25 +221,26 @@ if (!resume) #Start new run, do not resume
       rm(depth)
       
       #Apply PTFs to each horizon####
-      for (soillayer in c("sd1", "sd2", "sd3", "sd4", "sd5", "sd6"))
+      for (soillayer in 1:6)
       {
-        print(paste("- soillayer", soillayer, Sys.time(), "Memory in use:", memory.size(max=F)))
+        print(paste("- soillayer", soillayer, Sys.time(), "Memory in use:", round(as.numeric(pryr::mem_used())/2^20), " MB"))
         
-        clay<-raster(paste0("SoilGrids/clay_", soillayer, ".tif"))
+        
+        clay<-raster(replace_no(required_grids["clay"], soillayer))
         clay<-crop(clay, soils)
-        silt<-raster(paste0("SoilGrids/silt_", soillayer, ".tif"))
+        silt<-raster(replace_no(required_grids["silt"], soillayer))
         silt<-crop(silt, soils)
-        sand<-raster(paste0("SoilGrids/sand_", soillayer, ".tif"))
+        sand<-raster(replace_no(required_grids["sand"], soillayer))
         sand<-crop(sand, soils)
-        coarse<-raster(paste0("SoilGrids/cfvo_", soillayer, ".tif"))
+        coarse<-raster(replace_no(required_grids["coarse"], soillayer))
         coarse<-crop(coarse, soils)
-        bulkD<-raster(paste0("SoilGrids/bdod_", soillayer, ".tif"))
+        bulkD<-raster(replace_no(required_grids["bulkD"], soillayer))
         bulkD<-crop(bulkD,soils)
-        om<-raster(paste0("SoilGrids/soc_", soillayer, ".tif"))
+        om<-raster(replace_no(required_grids["om"], soillayer))
         om<-crop(om, soils)
-        ph<-raster(paste0("SoilGrids/phh2o_", soillayer, ".tif"))
+        ph<-raster(replace_no(required_grids["ph"], soillayer))
         ph<-crop(ph, soils)
-        cec<-raster(paste0("SoilGrids/cec_", soillayer, ".tif"))
+        cec<-raster(replace_no(required_grids["cec"], soillayer))
         cec<-crop(cec,soils)
         
         soil_attributes=data.frame(clay  =getValues(clay)/10,
@@ -214,9 +248,9 @@ if (!resume) #Start new run, do not resume
                                    bulkD = ifelse(getValues(bulkD) <= 0, NA, getValues(bulkD)/100),
                                    om     =1.74 * getValues(om)/100, #convert OC to OM
                                    coarse_frag =getValues(coarse)/10,
-                                   topSoil=as.numeric(soillayer=="sd1"))
+                                   topSoil=as.numeric(soillayer==1))
         
-        euptf_attributes=data.frame(TOPSOIL= ifelse(soillayer=="sd1", "top","sub"),
+        euptf_attributes=data.frame(TOPSOIL= ifelse(soillayer==1, "top","sub"),
                                     USSAND= getValues(sand)/10,
                                     USSILT = getValues(silt)/10,
                                     USCLAY  = getValues(clay)/10,
@@ -286,7 +320,7 @@ if (!resume) #Start new run, do not resume
         }
 
         soil_sum_layer$nfk=soil_sum_layer$fk-soil_sum_layer$theta_r          #compute nfk
-        names(soil_sum_layer)[-1]=paste0(soillayer, names(soil_sum_layer)[-1]) #add layer number to column names      
+        names(soil_sum_layer)[-1]=paste0("sd", soillayer, names(soil_sum_layer)[-1]) #add layer number to column names      
         
         
         # #Aggregate properties from basic horizon input data####
@@ -294,7 +328,7 @@ if (!resume) #Start new run, do not resume
         # soil_sum2$cellcount = table(getValues(soils))
         # soil_sum2$tile_a= a
         # soil_sum2$tile_b= b
-        # names(soil_sum2)[-1]=paste0(soillayer, names(soil_sum2)[-1]) #adjust column names
+        # names(soil_sum2)[-1]=paste0("sd", soillayer, names(soil_sum2)[-1]) #adjust column names
 
         soil_sum_tile = merge(soil_sum_tile, soil_sum_layer) #add current layer to collection done over all layers of this tile
         #soil_sum_tile <- unique(soil_sum_tile)
@@ -302,7 +336,7 @@ if (!resume) #Start new run, do not resume
         #Aggregate properties from PTFs####
         #soil_sum2 = aggregate(x=ptf_props, by=list(soil_id=getValues(soils)), FUN=mean, na.rm=TRUE) #aggregate according to soil_id
         #soil_sum2$nfk=soil_sum2$fk-soil_sum2$theta_r          #compute nfk
-        #names(soil_sum2)[-1]=paste0(soillayer, names(soil_sum2)[-1]) #adjust column names
+        #names(soil_sum2)[-1]=paste0("sd", soillayer, names(soil_sum2)[-1]) #adjust column names
         #soil_sum_tile = merge(soil_sum_tile, soil_sum2)   
         write.table(x=soil_sum_tile, file="soil_sum_recent.txt", sep="\t", quote=FALSE)
         rm(soil_sum_layer)

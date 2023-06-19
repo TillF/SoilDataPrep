@@ -1,5 +1,3 @@
-# This is a forked version, please double check with original (https://github.com/TillF/SoilDataPrep)
-
 # SoilDataPrep
 
 Prepare soil parameterisation (e.g. for meso-scale hydrological modelling with WASA-SED), using the global datasets SoilGrids and Pelletier et al. (2016). Pedotransfer functions from other packages ```(ptf.rawls{soilwaterptf}, euptf{euptf})``` are applied to calculate soil characteristics.
@@ -20,29 +18,13 @@ library(curl)
 library(data.table)
 library(panelaggregation)
 library(devtools)
+library("remotes")
 
-
-#install euptf
-  curl::curl_download(url = "https://esdac.jrc.ec.europa.eu/public_path/shared_folder/themes/euptf.zip", destfile = "euptf.zip")
-  unzip(zipfile = "euptf.zip")
-  untar("euptf_1.4.tar.gz")
-  system("R CMD INSTALL euptf") #install from source
-  unlink(c("euptf.zip", "euptf_vignette_1.4.pdf","euptf_1.4.tar.gz","euptf"), recursive = TRUE, force = TRUE) #clean up
-  library(euptf)
-
-#install soiltexture
-  install_github(repo = "julienmoeys/soiltexture/pkg/soiltexture") #install soiltexture package
-
-#install soilwaterfun  
-  install_github(repo = "rforge/soilwater/pkg/soilwaterfun") 
-
-#install soilwaterfun package
-  #install_github(repo = "rforge/soilwater/pkg/soilwaterptf") 
-  install_github(repo = "tillf/soilwater/pkg/soilwaterptf") #use different fork, as the original has not been updated yet
-
-library(soiltexture)
-library(soilwaterfun)
-library(soilwaterptf)
+#other libraries not on CRAN (for installation, see details in ```SoilDataPrep/example```)
+library("euptf")
+library("soiltexture")
+library("soilwaterfun")
+library("soilwaterptf")
 
 #install SoilDataPrep package
   install_github(repo = "tillf/SoilDataPrep/SoilDataPrep")
