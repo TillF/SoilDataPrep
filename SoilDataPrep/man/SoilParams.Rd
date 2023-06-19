@@ -41,7 +41,7 @@ Input tables for WASA-SED:
     Legend & short characteristic of soil types: ftp://ftp.soilgrids.org/data/recent/SoilGrids250m_TAXNWRB_legend_June_2016.pdf
 
     Index of all SoilGrids legends: ftp://ftp.soilgrids.org/legends/
- 
+} 
 
 \references{
 Explanation & paper on SoilGrids:

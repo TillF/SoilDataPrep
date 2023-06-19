@@ -10,14 +10,20 @@ library(raster)
 #install these packages manually, if you don't have them:
 
 
-#install.packages("gWidgets")
-# if "gWidgets" can not be installed trz to download it (https://cran.r-project.org/src/contrib/Archive/gWidgets/). 
+
+# install old version of gwidgets (no longer on CRAN), which is formally required by euptf
+install.packages("https://cran.r-project.org/src/contrib/Archive/gWidgets/gWidgets_0.0-54.tar.gz")
+# if "gWidgets" cannot be installed try to download it (https://cran.r-project.org/src/contrib/Archive/gWidgets/). 
 #and install the latest version "gWidgets_0.0-54.tar.gz" 
+
 #using RStudio. 
 #Click Tools → Install Packages.
 #Select Package Archive File (.zip, .tar.gz) in the Install from: slot.
 #Find the corresponding file on the local machine, and click Open.
 #Click Install.
+
+
+
 
 
 #install euptf, new version by melwey
@@ -35,27 +41,27 @@ library(raster)
 library(euptf)
 
 #install soiltexture
-  #devtools::install_github("julienmoeys/soiltexture/pkg/soiltexture")
+  #install_github(repo = "julienmoeys/soiltexture/pkg/soiltexture") #install soiltexture package
 
 #install soilwaterfun  
-  #devtools::install_github("julienmoeys/soilwater/pkg/soilwaterfun")
+  #install_github(repo = "julienmoeys/soilwater/pkg/soilwaterfun")
 
 #install soilwaterptf package
-  #devtools::install_github("julienmoeys/soilwater/pkg/soilwaterptf") #install soiltexture package
+  #install_github(repo ="julienmoeys/soilwater/pkg/soilwaterptf") #install soiltexture package
   
 #install SoilDataPrep package
-#install_github(repo = "TillF/SoilDataPrep/SoilDataPrep")
+  #install_github(repo = "TillF/SoilDataPrep/SoilDataPrep")
   
 library(SoilDataPrep)
 
 #---------------------------------------------------------------------------------------
 
 #### get geodata: DTB & SoilGrids####
-catch<-readOGR(dsn = "C:/Users/doko/Desktop/00 PHD A.Doko/SoilDataPrep/SoilDataPrep/boundary.shp")
+catch<-readOGR(dsn = "e:/till/uni/gis/esera_2018/basin.shp")
 GetDTB(catch) #download depth-to-bedrock grid
 GetSG(catch) #download soilgrids - grids
 
-DEM<-raster("C:/Users/doko/Desktop/00 PHD A.Doko/SoilDataPrep/SoilDataPrep/d.tif") # read in DEM
+DEM<-raster("e:/till/uni/gis/esera_2018/dem.tiff") # read in DEM
 
 #### apply pedotransfer functions to grids, aggregate, export result files
 SoilParams(catch, DEM, resume = FALSE)
