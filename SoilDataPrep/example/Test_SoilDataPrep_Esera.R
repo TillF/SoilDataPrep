@@ -85,13 +85,13 @@ plot(soilmap)
 
 #WASA-SED input
 
-particle_classes<-read.table("particle_classes.txt", header=T)
+particle_classes<-read.table("particle_classes.dat", header=T)
 
 r_soil_contains_particles<-read.table("r_soil_contains_particles.dat", header=T)
 
-horizons<-read.table("horizons.txt", fill=T, header=T, sep="\t")
+horizons<-read.table("horizons.dat", fill=T, header=T, sep="\t")
 
-soils<-read.table("soils.txt", header=T)
+soils<-read.table("soil.dat", header=T)
 
 
 MapSoils_Results()
