@@ -185,7 +185,10 @@ check_if_exists = function(filename)
       soils[]=as.integer(soils[]) #convert to integer
       dataType(soils)="INT2S"
       
-      soils<-crop(soils, depth, snap="out")
+      #soils2<-crop(x=soils, y=depth, snap="out") #produces error
+      
+      soils<-crop(x=soils, y=depth) #snap="in" and "near" seemed to produce the same results
+
       #depth<-resample(depth, soils, method="bilinear")
       
       soils = resample(x=soils, y=depth, method="ngb") #Adjust raster resolution: SoilGrids (250 m) to depth (=DEM resolution)
@@ -206,7 +209,7 @@ check_if_exists = function(filename)
       
       soils[]=as.integer(soils[]) #convert to integer
       dataType(soils)="INT2S"
-      writeRaster(soils, file=paste0("MapSoils/soils_", a,"_", b,".tif"), overwrite=T, datatype="INT2S")
+      writeRaster(x=soils, filename=paste0("MapSoils/soils_", a,"_", b,".tif"), overwrite=T, datatype="INT2S")
       
       alluvial[is.na(alluvial)]=0 #mask NAs
       soil_sum_tile = aggregate(x=data.frame(alluvial_flag=getValues(alluvial), depth=getValues(depth)), by=list(soil_id=getValues(soils)), FUN=mean, na.rm=TRUE) #aggregate according to soil_id
