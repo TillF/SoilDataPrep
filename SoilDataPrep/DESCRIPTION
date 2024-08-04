@@ -11,7 +11,7 @@ Maintainer: Till Francke <francke@uni-potsdam.de>
 Description: Prepare soil input (e.g. for meso-scale hydrological modelling with WASA), using the global datasets SoilGrids and Pelletier et al. (2016). Pedotransfer functions from other packages (ptf.rawls\{soilwaterptf\}, euptf\{euptf\}) are applied to calculate soil characteristics.
 License: WTFPL
 Depends:
-	raster,rgdal,euptf,data.table,panelaggregation,soilwaterptf,pryr
+	raster,euptf,data.table,panelaggregation,soilwaterptf,pryr
   
 
 
