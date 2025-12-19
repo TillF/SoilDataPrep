@@ -15,7 +15,6 @@
 GetDTB(catch)
 GetDTB(catch)
 SoilParams(catch, DEM, c=1000)
-SoilParamsCont(catch, DEM, c=1000)
 }}
 
 \author{
@@ -32,21 +31,37 @@ SoilParamsCont(catch, DEM, c=1000)
 ~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{
-#Create a spatial polygon
-coords = matrix(c(-44,-10,    -41,-9,
-                  -40,-13,    -45,-14), 
-                ncol = 2, byrow = TRUE)
-p <- Polygon(coords)
-catch <- SpatialPolygons(list(Polygons(list(p), ID = "a")))
+For a complete workflow, please check the example script examples/Example_isabena_tutorial.R
 
-#Download soil characteristics from SoilGrids for the extent of this polygon:
-GetSG(catch)
-
-#Download depth to bedrock from Pelletier et al. for the extent of this polygon:
-GetDTB(catch)
-
-#Apply pedotransfer functions to the downloaded soil characteristics and prepare soil input tables for WASA:
-DEM<-??
-c<-500
-SoiParams(catch, DEM, c, res_DEM)
+# #Create a spatial polygon
+# library(sf)
+# 
+# catch = st_as_sfc(st_bbox(c(xmin=-44, ymin=-10, xmax=-43, ymax=-9)) ) #generate some map extent
+# st_crs(catch) = st_crs(4326)
+# 
+# #Download soil characteristics from SoilGrids for the extent of this polygon:
+# GetSG(catch)
+# 
+# #Download depth to bedrock from Pelletier et al. for the extent of this polygon:
+# GetDTB(catch)
+# 
+# #Apply pedotransfer functions to the downloaded soil characteristics and prepare soil input tables for WASA-SED:
+# #create a random DEM
+# res <- 250 / 111320  # Convert meters to degrees
+# bbox <- st_bbox(catch)
+# 
+# # Define number of columns and rows based on resolution and extent
+# ncol <- ceiling((bbox$xmax - bbox$xmin) / res)
+# nrow <- ceiling((bbox$ymax - bbox$ymin) / res)
+# 
+# # Create the empty raster
+# DEM <- raster(ncols = ncol, nrows = nrow,
+#               xmn = bbox$xmin, xmx = bbox$xmax,
+#               ymn = bbox$ymin, ymx = bbox$ymax,
+#               crs = st_crs(catch)$proj4string)
+# # Fill the raster with random values (between 0 and 1)
+# set.seed(42)  # For reproducibility
+# values(DEM) <- runif(ncell(DEM))
+# 
+# DeriveSoilParams(catch, DEM)
 }

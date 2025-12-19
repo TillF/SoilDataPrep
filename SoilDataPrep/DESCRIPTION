@@ -1,17 +1,17 @@
 Package: SoilDataPrep
 Type: Package
 Title: Prepare soil input for hydrological modelling, specifically with WASA-SED
-Version: 1.019
-Date: 2023-12-12
-Author: c(
-    person("Sophia", "Dobkowitz", email = "dobkowit@uni-potsdam.de", role = c("cre","aut"),
+Version: 1.1
+Date: 2025-12-20
+Authors: c(
+    person("Sophia", "Dobkowitz", email = "dobkowit@uni-potsdam.de", role = c("cre","aut")),
     person("Till", "Francke", email = "francke@uni-potsdam.de", role = "aut"),
-    person("Tobias", "Pilz", email= "tpilz@uni-potsdam.de", role="aut"))
+    person("Tobias", "Pilz", role="aut"))
 Maintainer: Till Francke <francke@uni-potsdam.de>
 Description: Prepare soil input (e.g. for meso-scale hydrological modelling with WASA), using the global datasets SoilGrids and Pelletier et al. (2016). Pedotransfer functions from other packages (ptf.rawls\{soilwaterptf\}, euptf\{euptf\}) are applied to calculate soil characteristics.
 License: WTFPL
 Depends:
-	raster,euptf,data.table,panelaggregation,soilwaterptf,pryr
+	raster,euptf,data.table,soilwaterptf,pryr,sf
 
   
 
