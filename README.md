@@ -7,7 +7,7 @@ Pelletier, J.D. et al. 2016, A gridded global data set of soil, immobile regolit
 
 ## Installation
 ```
-see details in [```SoilDataPrep/example/install_dependencies.R```](SoilDataPrep/example/install_dependencies.R)
+see details in [SoilDataPrep/example/install_dependencies.R](SoilDataPrep/example/install_dependencies.R)
 
 library(SoilDataPrep)
 
