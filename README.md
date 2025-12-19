@@ -6,20 +6,8 @@ Pelletier, J.D. et al. 2016, A gridded global data set of soil, immobile regolit
 
 ## Installation
 ```
+#see details in ```[SoilDataPrep/example/install_dependencies.R](SoilDataPrep/example/install_dependencies.R)```
 
-#install these libraries that are not on CRAN (for installation, see details in ```SoilDataPrep/example/Example_isabena_tutorial.R```)
-library("euptf")
-library("soiltexture")
-library("soilwaterfun")
-library("soilwaterptf")
-
-
-install.packages("devtools") 
-library(devtools)
-
-#install SoilDataPrep package
-  install_github(repo = "tillf/SoilDataPrep/SoilDataPrep")
-  
 library(SoilDataPrep)
 
 ```
