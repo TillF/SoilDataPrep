@@ -7,7 +7,7 @@ Pelletier, J.D. et al. 2016, A gridded global data set of soil, immobile regolit
 ## Installation
 ```
 
-#install these libraries that are not on CRAN (for installation, see details in ```SoilDataPrep/example```)
+#install these libraries that are not on CRAN (for installation, see details in ```SoilDataPrep/example/Example_isabena_tutorial.R```)
 library("euptf")
 library("soiltexture")
 library("soilwaterfun")
@@ -28,4 +28,4 @@ library(SoilDataPrep)
 DEM and shapefile of the catchment
 
 ## Example
-An example workflow can be found in ```SoilDataPrep/example```
+An example workflow can be found in ```SoilDataPrep/example/Example_isabena_tutorial.R```
