@@ -7,7 +7,7 @@ Pelletier, J.D. et al. 2016, A gridded global data set of soil, immobile regolit
 
 ## Installation
 ```
-see details in ```[SoilDataPrep/example/install_dependencies.R](SoilDataPrep/example/install_dependencies.R)```
+see details in [```SoilDataPrep/example/install_dependencies.R```](SoilDataPrep/example/install_dependencies.R)
 
 library(SoilDataPrep)
 
@@ -17,4 +17,5 @@ library(SoilDataPrep)
 DEM and shapefile of the catchment
 
 ## Example
-An example workflow can be found in ```[SoilDataPrep/example/Example_isabena_tutorial.R](SoilDataPrep/example/Example_isabena_tutorial.R)```
+An example workflow can be found in [SoilDataPrep/example/Example_isabena_tutorial.R](SoilDataPrep/example/Example_isabena_tutorial.R)
+
